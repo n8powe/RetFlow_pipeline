@@ -1,58 +1,53 @@
 # Run order
 
+# Installation procedure
 
-1) Run undistortVideo.py with correct paths to video and gaze data
+1) Install python dependencies. Go to directory and run [pip install -r requirements.txt]
 
+2) Install OpenCV with GPU support (if you have a CUDA supported graphics card.)
 
-2) Set paths to video, gaze data, info.json, and world_timestamps in the .config file based on **undistorted** video and gaze data.
+This is the tutorial I used to install OpenCV with GPU/CUDA support. 
+https://www.freecodecamp.org/news/python-requirementstxt-explained/#:~:text=Many%20projects%20rely%20on%20libraries,be%20installed%20with%20the%20file.
 
+Follow the instructions given to install visual studio, anaconda, CMake, Git, CUDA, and cuDNN. 
 
-3) Run getAverageGazePositionWithinFrame.py using the undistorded data.
+Then run installOpenCVCUDA.bat which will download, build, and install opencv with CUDA. If the .bat file does not work, follow the instructions
+in the link above by running them one by one in command prompt. 
 
+3) Then make note of the path to openCV [will look like this "//OpenCV-4.5.1//x64//vc16//bin" and should be in users on the C drive.]
 
-4) Run createVideoSection.m -- add in the frames Start and End that you want to chop (skip this step if you are running the entire video)
+4) In openCVOF2.py, undistortVideo.py, and visualizeRetinalFlow.py change the path to import OpenCV to the path from above. 
+Additionally, you will need to add the path to the Nvidia GPU Computing toolkit. That is found in program files on the C drive. 
 
+# Run order
 
-5) Run openCVOF2.py using the command [python openCVOF2.py "opticFlowFiles" "choppedData/choppedVideo.mp4" 9999 1200x1600]
-    Arg[1] = output folder path
-    Arg[2] = video path
-    Arg[3] = maxNumFrames
-    Arg[4] = Optic Flow resolution to record at (I think full resolution is necessary for retinal flow? -- NP check this.)
+1) Open configureVariables.m in matlab. 
 
+2) Change any relevant paths to the data you wish to analyse. This includes the video, gaze files, timestamps, and camera intrinsics json. 
 
-    This will write the optic flow to .flo files.
+3) The booleans at the top of the file change what parts of the analyses will run. 
+		preprocessVideoAndGaze -- Preprocesses the video and gaze data by undistorting them based on the camera json file. 
+		chopVideo              -- Creates a video segment and the corresponding gaze data based on the undistorted files.
+		runOF                  -- Runs optic flow estimation and saves the corresponding optic flow as both H5 file and individual .mat files.
+		runMain                -- Calculates retinal centered optic flow based on the saved optic flow files.
+		visualizeOF            -- Creates a video visualizing the optic flow and gaze location. 
+		makeRFVideo            -- Creates a video visualizing retinal flow overlayed on the gaze centered video. 
+		startFrame             -- The first frame of the portion of the video you wish to analyze.
+		endFrame               -- The last frame of the portion of the video you wish you analyze. 
+		flowMethod             -- The optic flow estimation algorithm that will be used. If no CUDA use 'deepflow' and make sure opencv is install via pip command. 
+		**Other parameters will be added as needed.**
 
+4) Run configureVariables. If paths are set correctly this should start running. If you do not have CUDA installed opencv you will need to 
+install opencv-contrib-python by running pip install opencv-contrib-python.
 
-6) Next run main.m in the retinalMotion-main folder with the path variables correctly changed.
-    NOTE: Make sure the optic flow input folder points to the .flo files made in the previous step.
-    NOATE: Some functions require additional modules to be downloaded from matlab add-ons. 
+5) Once the code gets to retinal flow processing in main.m it might crash due to dependencies. If needed, install the required matlab  modules. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-NOTE: The output from pupil neon doesn't save the eye states right now (august 2023). They said on their discord server that they are expecting that by Q3 2023, so hopefully soon. That seems to be necessary for fixation detection in main.m in step (6).
-
-
-NOTE: **MAKE THESE CHANGES TO UNDIST GAZE** To do this, you need to estimate the focal length of the world facing camera, and then you can figure out camera relative 3d gaze vectors (the 2d eye positions can then be thought of as being on the image plane of the camera, at a focal length's distance away from the camera center.
-
-
-You can use this matlab script to estimate camera params from a set of images of a checkerboard (I think there should be a giant one laying around somewhere in the lab).
+6) If everything has been setup correctly, the code will output the optic flow files, retinal flow files, and videos showing optic flow and retinal flow. 
 
 
-You then take gazeX, gazeY (pixel coordinates minus camera center so resX/2, resY/2), add the focal length in pixels as the Z coordinate, and then normalize that vector
 
+**Below here are notes**
 
-**ANOTHER NOTE**: I think I got the above working. But I need to rework the code that writes the flow (.flo) files so that they are written to an h5 file format. **I think I got this finished too**
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbNDk5NzM2Mzc5XX0=
--->
+1) Fix the opencv cuda code in opencvOF2.py. Use Dan's code as a template. 
+
+2) Make the changes so that this pipeline can take in Pupil Core recordings too. 
