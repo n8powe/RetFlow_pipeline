@@ -104,7 +104,10 @@ function createFlowVisualization(flowpath, videopath, startFrame, endFrame, reti
                 hold on;
                 flow = currFrame;
                 hsv = visualizeRetinalFlowAsColors(flow, currImage, ret_res);
-                imshow(hsv)
+                imagesc(hsv)
+                
+                
+
                 hold off;
             elseif strcmp(flowVisType, 'Quiver')
                 hold on;
@@ -239,13 +242,16 @@ end
 
 function hsv = visualizeRetinalFlowAsColors(flow, frame1, ret_res)
     %% I think I can save these in the mat files in Karl's code (main.m). 
-    hsv = zeros(ret_res+1,ret_res+1,3);
-    hsv(:,:, 1) = 0;
+    %hsv = zeros(ret_res+1,ret_res+1,3);
+    hsv(:,:,1) = (flow.Orientation + pi) / (2*pi);
+    hsv(:,:,2) = zeros(ret_res+1,ret_res+1)+1;
+    hsv(:,:,3) = flow.Magnitude;
+    hsv = hsv2rgb(hsv);
 
-    ang = flow.Orientation;
-    mag = flow.Magnitude;
-    hsv(:,:, 2) = ang;%*180/pi/2;
-    hsv(:,:, 3) = normalize(mag, "range")*255;
+    %ang = flow.Orientation;
+    %mag = flow.Magnitude;
+    %hsv(:,:, 2) = ang;%*180/pi/2;
+    %hsv(:,:, 3) = normalize(mag, "range")*255;
 
 
 end

@@ -6,8 +6,8 @@ Requires opencv installation with unofficial libraries: pip3 install opencv_cont
 useGPU = True
 import os
 try:
-    os.add_dll_directory("C://Users//HayhoeLab//OpenCV-4.5.1//x64//vc16//bin")
-    os.add_dll_directory("C://Program Files//NVIDIA GPU Computing Toolkit//CUDA//v11.0//bin")
+    os.add_dll_directory("C://Users//natha//OpenCV-4.5.1//x64//vc16//bin")
+    os.add_dll_directory("C://Program Files//NVIDIA GPU Computing Toolkit//CUDA//v11.8//bin")
     import cv2 as cv
     useGPU = True
 except:

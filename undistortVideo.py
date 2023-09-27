@@ -19,8 +19,8 @@ import av
 from tqdm import tqdm
 import pandas as pd
 try:
-    os.add_dll_directory("C://Users//HayhoeLab//OpenCV-4.5.1//x64//vc16//bin")
-    os.add_dll_directory("C://Program Files//NVIDIA GPU Computing Toolkit//CUDA//v11.0//bin")
+    os.add_dll_directory("C://Users//natha//OpenCV-4.5.1//x64//vc16//bin")
+    os.add_dll_directory("C://Program Files//NVIDIA GPU Computing Toolkit//CUDA//v11.8//bin")
     import cv2
     useGPU = True
 except:
